@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MovieTicketsAPI.Data;
 using MovieTicketsAPI.Models;
@@ -8,8 +9,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace MovieTicketsAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -17,54 +16,84 @@ namespace MovieTicketsAPI.Controllers
     public class MoviesController : ControllerBase
     {
         private MovieDbContext _dbContext;
-
         public MoviesController(MovieDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        // GET: api/<MoviesController>
-        [HttpGet]
-        public IActionResult Get()
+        [Authorize]
+        [HttpGet("[action]")]
+        public IActionResult AllMovies(string sort, int? pageNumber, int? pageSize)
         {
-            return Ok(_dbContext.Movies);
+            var currentPageNumber = pageNumber ?? 1;
+            var currentPageSize = pageSize ?? 4;
+            var TotalCount = _dbContext.Movies.Count();
+           var movies = from movie in _dbContext.Movies
+            select new
+            {
+                Id = movie.Id,
+                Name = movie.Name,
+                Duration = movie.Duration,
+                Language = movie.Language,
+                Rating = movie.Rating,
+                Genre = movie.Genre,
+                ImageUrl = movie.ImageUrl,
+                TotalCount = TotalCount
+            };
+
+            switch (sort)
+            {
+                case "highest__rating":
+                    return Ok(movies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize).OrderByDescending(m => m.Rating));
+                case "lowest_rating":
+                    return Ok(movies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize).OrderBy(m => m.Rating));
+                case "longest_duration":
+                    return Ok(movies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize).OrderByDescending(m => m.Duration));
+                case "shortest_duration":
+                    return Ok(movies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize).OrderBy(m => m.Duration));
+                default:
+                    return Ok(movies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize));
+            }
+
         }
 
-        // GET api/<MoviesController>/5
-        [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        [Authorize]
+        [HttpGet("[action]/{id}")]
+        public IActionResult MovieDetail(int id)
         {
             var movie = _dbContext.Movies.Find(id);
             if (movie == null)
             {
-                return NotFound("No data found with this Id");
+                return NotFound();
             }
-            else
-            {
-                return Ok(movie);
-            }
+            return Ok(movie);
         }
 
-        [HttpGet("[action]/{id}")]
-        public int Test(int id)
+        [Authorize]
+        [HttpGet("[action]")]
+        public IActionResult FindMovies(string movieName)
         {
-            return id;
+            var movies = from movie in _dbContext.Movies
+                         where movie.Name.StartsWith(movieName)
+                         select new
+                         {
+                             Id = movie.Id,
+                             Name = movie.Name,
+                             Duration = movie.Duration,
+                             Language = movie.Language,
+                             Rating = movie.Rating,
+                             Genre = movie.Genre,
+                             ImageUrl = movie.ImageUrl
+                         };
+            return Ok(movies);
         }
 
-        // POST api/<MoviesController>
-        //[HttpPost]
-        //public IActionResult Post([FromBody] Movie movieObj)
-        //{
-        //    _dbContext.Movies.Add(movieObj);
-        //    _dbContext.SaveChanges();
-        //    return StatusCode(StatusCodes.Status201Created);
-        //}
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult Post([FromForm] Movie movieObj)
         {
             var guid = Guid.NewGuid();
-            var filePath = Path.Combine("wwwroot", guid+".jpg");
+            var filePath = Path.Combine("wwwroot", guid + ".jpg");
             if (movieObj.Image != null)
             {
                 var fileStream = new FileStream(filePath, FileMode.Create);
@@ -77,11 +106,11 @@ namespace MovieTicketsAPI.Controllers
             return StatusCode(StatusCodes.Status201Created);
         }
 
-        // PUT api/<MoviesController>/5
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromForm] Movie movieObj)
         {
-           var movie = _dbContext.Movies.Find(id);
+            var movie = _dbContext.Movies.Find(id);
             if (movie == null)
             {
                 return NotFound("No data found with this Id");
@@ -98,18 +127,25 @@ namespace MovieTicketsAPI.Controllers
                 }
 
                 movie.Name = movieObj.Name;
+                movie.Description = movieObj.Description;
                 movie.Language = movieObj.Language;
+                movie.Duration = movieObj.Duration;
+                movie.PlayingDate = movieObj.PlayingDate;
+                movie.PlayingTime = movie.PlayingTime;
                 movie.Rating = movieObj.Rating;
+                movie.Genre = movieObj.Genre;
+                movie.TrailorUrl = movieObj.TrailorUrl;
+                movie.TicketPrice = movieObj.TicketPrice;
                 _dbContext.SaveChanges();
                 return Ok("Successfully updated data");
             }
         }
 
-        // DELETE api/<MoviesController>/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-          var movie = _dbContext.Movies.Find(id);
+            var movie = _dbContext.Movies.Find(id);
             if (movie == null)
             {
                 return NotFound("No data found with this Id");
