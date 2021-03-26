@@ -21,9 +21,8 @@ namespace MovieTicketsAPI.Controllers
             _dbContext = dbContext;
         }
 
-        [Authorize]
-        [HttpGet("[action]")]
-        public IActionResult AllMovies(string sort, int? pageNumber, int? pageSize)
+        [HttpGet]
+        public IActionResult GetAllMovies(string sort, int? pageNumber, int? pageSize)
         {
             var currentPageNumber = pageNumber ?? 1;
             var currentPageSize = pageSize ?? 4;
@@ -57,9 +56,8 @@ namespace MovieTicketsAPI.Controllers
 
         }
 
-        [Authorize]
-        [HttpGet("[action]/{id}")]
-        public IActionResult MovieDetail(int id)
+        [HttpGet("{id}")]
+        public IActionResult GetMovie(int id)
         {
             var movie = _dbContext.Movies.Find(id);
             if (movie == null)
@@ -69,9 +67,8 @@ namespace MovieTicketsAPI.Controllers
             return Ok(movie);
         }
 
-        [Authorize]
         [HttpGet("[action]")]
-        public IActionResult FindMovies(string movieName)
+        public IActionResult Search(string movieName)
         {
             var movies = from movie in _dbContext.Movies
                          where movie.Name.StartsWith(movieName)
