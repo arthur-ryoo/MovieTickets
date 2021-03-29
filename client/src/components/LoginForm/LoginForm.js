@@ -1,4 +1,6 @@
 import React, { useEffect, useReducer } from 'react';
+import { useRecoilState } from 'recoil';
+import { userAtom } from '../../atoms/atoms';
 import { axiosApiInstance as API } from '../../utils/axiosConfig';
 import LocalStorageService from '../../utils/localStorageService';
 import {
@@ -62,6 +64,8 @@ const useStyles = makeStyles((theme) => ({
 export default function LoginForm() {
   const classes = useStyles();
   const history = useHistory();
+  // eslint-disable-next-line
+  const [user, setUser] = useRecoilState(userAtom);
 
   const [state, setState] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
@@ -119,6 +123,10 @@ export default function LoginForm() {
     API.post('users/login', body)
       .then((response) => {
         if (response.status === 200) {
+          setUser({
+            id: response.data.user_id,
+            role: response.data.user_role,
+          });
           LocalStorageService.setToken(response.data);
           history.push('/');
         }
