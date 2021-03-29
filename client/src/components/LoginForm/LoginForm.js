@@ -126,6 +126,7 @@ export default function LoginForm() {
           setUser({
             id: response.data.user_id,
             role: response.data.user_role,
+            isLoggined: true,
           });
           LocalStorageService.setToken(response.data);
           history.push('/');
