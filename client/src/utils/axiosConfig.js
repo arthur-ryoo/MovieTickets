@@ -5,12 +5,11 @@ const localStorageService = LocalStorageService.getService();
 const cancelTokenSource = axios.CancelToken.source();
 
 const axiosApiInstance = axios.create({
-  baseURL: 'http://movietickets.azurewebsites.net/api/',
+  baseURL: 'https://movietickets.azurewebsites.net/api/',
 });
 
 axiosApiInstance.interceptors.request.use(
   (config) => {
-    console.log('Axios Request Interceptor');
     if (config.url === 'users/login' || config.url === 'users/register') {
       return config;
     } else {
@@ -26,7 +25,6 @@ axiosApiInstance.interceptors.request.use(
 
 axiosApiInstance.interceptors.response.use(
   (response) => {
-    console.log('Axios Response Interceptor');
     return response;
   },
   (error) => {
