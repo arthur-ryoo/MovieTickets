@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer } from 'react';
 import { useRecoilState } from 'recoil';
 import { userAtom } from '../../atoms/atoms';
-import { axiosApiInstance as API } from '../../utils/axiosConfig';
+import axios from 'axios';
 import LocalStorageService from '../../utils/localStorageService';
 import {
   Avatar,
@@ -11,55 +11,16 @@ import {
   FormControlLabel,
   Checkbox,
   Link,
-  Box,
   Grid,
   Typography,
   Container,
   CircularProgress,
   Backdrop,
 } from '@material-ui/core';
+import useStyles from './LoginFormStyles';
 import Alert from '@material-ui/lab/Alert';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      Movie Tickets
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  alert: {
-    marginTop: theme.spacing(2),
-  },
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
-  },
-}));
 
 export default function LoginForm() {
   const classes = useStyles();
@@ -105,6 +66,8 @@ export default function LoginForm() {
     event.preventDefault();
     setState({ isLoading: true });
 
+    const baseURL = 'https://movietickets.azurewebsites.net/api/';
+
     const { email, password, isChecked } = state;
 
     if (isChecked && email !== '') {
@@ -120,13 +83,14 @@ export default function LoginForm() {
       password,
     };
 
-    API.post('users/login', body)
+    axios
+      .post(`${baseURL}users/login`, body)
       .then((response) => {
         if (response.status === 200) {
           setUser({
             id: response.data.user_id,
             role: response.data.user_role,
-            isLoggined: true,
+            isLoggedIn: true,
           });
           LocalStorageService.setToken(response.data);
           history.push('/');
@@ -212,9 +176,6 @@ export default function LoginForm() {
           </Grid>
         </form>
       </div>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
       <Backdrop className={classes.backdrop} open={state.isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>

@@ -1,5 +1,5 @@
 import React, { useReducer } from 'react';
-import { axiosApiInstance as API } from '../../utils/axiosConfig';
+import axios from 'axios';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -82,6 +82,8 @@ export default function SignupForm() {
     event.preventDefault();
     setState({ isLoading: true });
 
+    const baseURL = 'https://movietickets.azurewebsites.net/api/';
+
     const { name, email, password } = state;
 
     let body = {
@@ -90,7 +92,8 @@ export default function SignupForm() {
       password,
     };
 
-    API.post('users/register', body)
+    axios
+      .post(`${baseURL}users/register`, body)
       .then((response) => {
         console.log(response);
         if (response.status === 201) history.push('/login');
