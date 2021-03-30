@@ -7,7 +7,17 @@ export const userAtom = atom({
   default: {
     id: 0,
     role: '',
-    isLoggined: false,
+    isLoggedIn: false,
   },
   effects_UNSTABLE: [persistAtom],
+});
+
+export const moviesAtom = atom({
+  key: 'movies',
+  default: [],
+});
+
+export const movieDetailAtom = atom({
+  key: 'movieDetail',
+  default: [],
 });
