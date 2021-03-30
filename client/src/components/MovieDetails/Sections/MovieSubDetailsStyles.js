@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   card: {
     display: 'flex',
     textAlign: 'center',
@@ -11,6 +11,6 @@ const useStyles = makeStyles({
   cardMedia: {
     width: 145,
   },
-});
+}));
 
 export default useStyles;

@@ -71,7 +71,7 @@ export default function MovieDetails(props) {
               </Grid>
             </Grid>
           </Paper>
-          <MovieSubDetails movieDetail={movieDetail} />
+          <MovieSubDetails movieDetail={movieDetail} movieId={movieId} />
         </Container>
       </div>
     </React.Fragment>
