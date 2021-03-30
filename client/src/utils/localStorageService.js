@@ -24,7 +24,7 @@ const LocalStorageService = (() => {
   return {
     getService: _getService,
     setToken: _setToken,
-    getAuthToken: _getAccessToken,
+    getAccessToken: _getAccessToken,
     clearToken: _clearToken,
   };
 })();
