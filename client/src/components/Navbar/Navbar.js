@@ -6,39 +6,34 @@ import {
   List,
   ListItem,
   ListItemText,
-  makeStyles,
   Toolbar,
   Fab,
 } from '@material-ui/core';
+import useStyles from './NavbarStyles';
 import { Home, KeyboardArrowUp } from '@material-ui/icons';
 import React from 'react';
 import HideOnScroll from './Sections/HideOnScroll';
 import SideDrawer from './Sections/SideDrawer';
 import BackToTop from './Sections/BackToTop';
-
-const useStyles = makeStyles({
-  navbarDisplayFlex: {
-    display: `flex`,
-    justifyContent: `space-between`,
-  },
-  navListDisplayFlex: {
-    display: `flex`,
-    justifyContent: `space-between`,
-  },
-  linkText: {
-    textDecoration: `none`,
-    textTransform: `uppercase`,
-    color: `white`,
-  },
-});
-
-const navLinks = [
-  { title: 'log in', path: '/login' },
-  { title: 'sign up', path: '/signup' },
-];
+import { isLoggedInLinks, isNotLoggedInLinks } from './Sections/NavbarItems';
+import { useRecoilState } from 'recoil';
+import { userAtom } from '../../atoms/atoms';
+import LocalStorageService from '../../utils/localStorageService';
 
 const Navbar = () => {
   const classes = useStyles();
+  const [user, setUser] = useRecoilState(userAtom);
+
+  const handleLogout = (event) => {
+    if (event.currentTarget.id === 'logout') {
+      LocalStorageService.clearToken();
+      setUser({
+        id: 0,
+        role: '',
+        isLoggedIn: false,
+      });
+    }
+  };
 
   return (
     <>
@@ -58,17 +53,41 @@ const Navbar = () => {
                   aria-labelledby="main navigation"
                   className={classes.navListDisplayFlex}
                 >
-                  {navLinks.map(({ title, path }) => (
-                    <a href={path} key={title} className={classes.linkText}>
-                      <ListItem button>
-                        <ListItemText primary={title} />
-                      </ListItem>
-                    </a>
-                  ))}
+                  {user.isLoggedIn ? (
+                    <>
+                      {isLoggedInLinks.map(({ title, path, id }) => (
+                        <a
+                          href={path}
+                          key={title}
+                          className={classes.linkText}
+                          onClick={handleLogout}
+                          id={id}
+                        >
+                          <ListItem button>
+                            <ListItemText primary={title} />
+                          </ListItem>
+                        </a>
+                      ))}
+                    </>
+                  ) : (
+                    <>
+                      {isNotLoggedInLinks.map(({ title, path }) => (
+                        <a href={path} key={title} className={classes.linkText}>
+                          <ListItem button>
+                            <ListItemText primary={title} />
+                          </ListItem>
+                        </a>
+                      ))}
+                    </>
+                  )}
                 </List>
               </Hidden>
               <Hidden mdUp>
-                <SideDrawer navLinks={navLinks} />
+                <SideDrawer
+                  navLinks={
+                    user.isLoggedIn ? isLoggedInLinks : isNotLoggedInLinks
+                  }
+                />
               </Hidden>
             </Container>
           </Toolbar>
