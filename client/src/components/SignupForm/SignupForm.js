@@ -1,7 +1,6 @@
 import React, { useReducer } from 'react';
 import axios from 'axios';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { makeStyles } from '@material-ui/core/styles';
 import {
   Avatar,
   Button,
@@ -9,7 +8,6 @@ import {
   TextField,
   Link,
   Grid,
-  Box,
   Typography,
   Container,
   CircularProgress,
@@ -17,43 +15,7 @@ import {
 } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { useHistory } from 'react-router-dom';
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      Movie Tickets {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(3),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  alert: {
-    marginTop: theme.spacing(2),
-  },
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
-  },
-}));
+import useStyles from './SignUpFormStyles';
 
 export default function SignupForm() {
   const classes = useStyles();
@@ -130,7 +92,7 @@ export default function SignupForm() {
                 required
                 fullWidth
                 id="name"
-                label="Name"
+                label="Full Name"
                 name="name"
                 autoComplete="name"
                 autoFocus
@@ -185,9 +147,6 @@ export default function SignupForm() {
           </Grid>
         </form>
       </div>
-      <Box mt={5}>
-        <Copyright />
-      </Box>
       <Backdrop className={classes.backdrop} open={state.isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
