@@ -21,3 +21,13 @@ export const movieDetailAtom = atom({
   key: 'movieDetail',
   default: [],
 });
+
+export const reservationsAtom = atom({
+  key: 'reservations',
+  default: [],
+});
+
+export const reservationDetailAtom = atom({
+  key: 'reservationDetail',
+  default: [],
+});
