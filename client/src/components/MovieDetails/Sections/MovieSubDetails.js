@@ -57,7 +57,7 @@ export default function FeaturedPost(props) {
         onClose={handleSnackbarClose}
       >
         <Alert onClose={handleSnackbarClose} severity="success">
-          Successfully book your ticket(s)!
+          Successfully book your ticket!
         </Alert>
       </Snackbar>
       <Grid item xs={12} md={6}>
@@ -85,17 +85,17 @@ export default function FeaturedPost(props) {
               </CardContent>
             </div>
             <Hidden xsDown>
-              <CardMedia
-                className={classes.cardMedia}
-                src={movieDetail.trailorUrl}
-                image={
-                  movieDetail.imageUrl &&
-                  `http://movietickets.azurewebsites.net/${movieDetail.imageUrl.slice(
+              {movieDetail.imageUrl ? (
+                <CardMedia
+                  className={classes.cardMedia}
+                  image={`http://movietickets.azurewebsites.net/${movieDetail.imageUrl.slice(
                     1
-                  )}`
-                }
-                title={movieDetail.name}
-              />
+                  )}`}
+                  title={movieDetail.name}
+                />
+              ) : (
+                <div></div>
+              )}
             </Hidden>
           </Card>
         </CardActionArea>
@@ -128,7 +128,7 @@ export default function FeaturedPost(props) {
                 color="primary"
                 onClick={handleClickOpen}
               >
-                Book a Ticket
+                Book Your Ticket
               </Button>
               <Dialog open={open} onClose={handleClose}>
                 <DialogContent>
