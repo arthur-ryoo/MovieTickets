@@ -15,7 +15,11 @@ import React from 'react';
 import HideOnScroll from './Sections/HideOnScroll';
 import SideDrawer from './Sections/SideDrawer';
 import BackToTop from './Sections/BackToTop';
-import { isLoggedInLinks, isNotLoggedInLinks } from './Sections/NavbarItems';
+import {
+  isLoggedInLinks,
+  isLoggedInAsAdminLinks,
+  isNotLoggedInLinks,
+} from './Sections/NavbarItems';
 import { useRecoilState } from 'recoil';
 import { userAtom } from '../../atoms/atoms';
 import LocalStorageService from '../../utils/localStorageService';
@@ -53,7 +57,23 @@ const Navbar = () => {
                   aria-labelledby="main navigation"
                   className={classes.navListDisplayFlex}
                 >
-                  {user.isLoggedIn ? (
+                  {user.isLoggedIn && user.role === 'Admin' ? (
+                    <>
+                      {isLoggedInAsAdminLinks.map(({ title, path, id }) => (
+                        <a
+                          href={path}
+                          key={title}
+                          className={classes.linkText}
+                          onClick={handleLogout}
+                          id={id}
+                        >
+                          <ListItem button>
+                            <ListItemText primary={title} />
+                          </ListItem>
+                        </a>
+                      ))}
+                    </>
+                  ) : user.isLoggedIn ? (
                     <>
                       {isLoggedInLinks.map(({ title, path, id }) => (
                         <a
