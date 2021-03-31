@@ -84,7 +84,7 @@ export default function MovieBookingForm(props) {
             Total: ${props.movieDetail.ticketPrice * state.qty}
           </Typography>
         </Grid>
-        <Box marginLeft="10px" marginBottom="30px" alignItems="right">
+        <Box marginLeft="10px" marginBottom="30px">
           <Button variant="contained" color="primary" onClick={handleSubmit}>
             Book
           </Button>
