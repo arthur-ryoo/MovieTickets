@@ -50,7 +50,10 @@ export default function Home() {
           setLoading(false);
         }
       })
-      .catch((error) => alert(error));
+      .catch((error) => {
+        setLoading(false);
+        alert(error);
+      });
   }, [setMovies, pageNumber, pageSize, sortBy]);
 
   const goToPrevious = () => {

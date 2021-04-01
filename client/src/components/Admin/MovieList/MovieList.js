@@ -79,7 +79,10 @@ export default function MovieList() {
             setLoading(false);
           }
         })
-        .catch((error) => alert(error));
+        .catch((error) => {
+          setLoading(false);
+          alert(error);
+        });
     }
   }, [setMovies, pageNumber, pageSize, sortBy, user.role]);
 

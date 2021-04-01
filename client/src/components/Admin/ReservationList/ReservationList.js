@@ -46,7 +46,10 @@ export default function ReservationList() {
             setLoading(false);
           }
         })
-        .catch((error) => alert(error));
+        .catch((error) => {
+          setLoading(false);
+          alert(error);
+        });
     }
   }, [setReservations, user.role]);
 
