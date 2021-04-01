@@ -124,7 +124,7 @@ export default function MovieForm(props) {
         )}
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={6} sm={6}>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -134,13 +134,12 @@ export default function MovieForm(props) {
                 label="Movie Name"
                 name="name"
                 type="text"
-                autoFocus
                 value={state.name}
                 onChange={handleChange}
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={6} sm={6}>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -170,7 +169,7 @@ export default function MovieForm(props) {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={6} sm={6}>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -185,7 +184,7 @@ export default function MovieForm(props) {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={6} sm={6}>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -234,7 +233,7 @@ export default function MovieForm(props) {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={6} sm={6}>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -250,7 +249,7 @@ export default function MovieForm(props) {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={6} sm={6}>
               <TextField
                 variant="outlined"
                 margin="normal"

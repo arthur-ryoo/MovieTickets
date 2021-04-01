@@ -140,7 +140,7 @@ export default function Home() {
               ) : (
                 <Grid container spacing={4}>
                   {movies.map((item) => (
-                    <Grid item key={item.id} xs={12} sm={6} md={4}>
+                    <Grid item key={item.id} xs={6} sm={6} md={4}>
                       <Card className={classes.card}>
                         <Link href={`/movies/${item.id}`}>
                           <CardMedia
@@ -155,12 +155,7 @@ export default function Home() {
                           <Typography gutterBottom variant="h5" component="h2">
                             {item.name}
                           </Typography>
-                          <Box
-                            display="flex"
-                            alignItems="baseline"
-                            justifyContent="space-between"
-                            marginBottom="10px"
-                          >
+                          <Box className={classes.chip}>
                             <Chip label={item.rating} color="primary" />
                             <Chip label={item.genre} color="secondary" />
                             <Chip label={item.duration} />

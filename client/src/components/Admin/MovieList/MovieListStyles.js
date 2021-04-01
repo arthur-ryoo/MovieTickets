@@ -23,6 +23,22 @@ const useStyles = makeStyles((theme) => ({
   cardContent: {
     flexGrow: 1,
     textAlign: 'center',
+    [theme.breakpoints.down('xs')]: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+  },
+  chip: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginBottom: '10px',
+    [theme.breakpoints.down('xs')]: {
+      display: 'flex',
+      alignItems: 'center',
+      flexDirection: 'column',
+    },
   },
   pagination: {
     textAlign: 'center',
