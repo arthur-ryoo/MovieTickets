@@ -105,7 +105,11 @@ const Navbar = () => {
               <Hidden mdUp>
                 <SideDrawer
                   navLinks={
-                    user.isLoggedIn ? isLoggedInLinks : isNotLoggedInLinks
+                    user.isLoggedIn && user.role === 'Admin'
+                      ? isLoggedInAsAdminLinks
+                      : user.isLoggedIn
+                      ? isLoggedInLinks
+                      : isNotLoggedInLinks
                   }
                 />
               </Hidden>
