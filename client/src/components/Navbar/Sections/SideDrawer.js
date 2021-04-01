@@ -21,7 +21,7 @@ const useStyles = makeStyles({
   },
 });
 
-const SideDrawer = ({ navLinks }) => {
+const SideDrawer = ({ navLinks, handleLogout }) => {
   const classes = useStyles();
   const [state, setState] = useState({ right: false });
 
@@ -44,8 +44,14 @@ const SideDrawer = ({ navLinks }) => {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List component="nav">
-        {navLinks.map(({ title, path }) => (
-          <a href={path} key={title} className={classes.linkText}>
+        {navLinks.map(({ title, path, id }) => (
+          <a
+            href={path}
+            key={title}
+            className={classes.linkText}
+            id={id}
+            onClick={handleLogout}
+          >
             <ListItem button>
               <ListItemText primary={title} />
             </ListItem>

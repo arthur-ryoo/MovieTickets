@@ -111,6 +111,7 @@ const Navbar = () => {
                       ? isLoggedInLinks
                       : isNotLoggedInLinks
                   }
+                  handleLogout={handleLogout}
                 />
               </Hidden>
             </Container>
