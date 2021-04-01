@@ -19,6 +19,7 @@ import {
   DialogTitle,
   DialogContent,
   Snackbar,
+  LinearProgress,
 } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import useStyles from './MovieListStyles';
@@ -40,8 +41,9 @@ export default function MovieList() {
 
   const baseURL = 'https://movietickets.azurewebsites.net/api/';
 
-  const user = useRecoilValue(userAtom);
+  const [loading, setLoading] = useState(false);
 
+  const user = useRecoilValue(userAtom);
   const [movies, setMovies] = useRecoilState(moviesAtom);
 
   const [pageNumber, setPageNumber] = useState(1);
@@ -64,17 +66,22 @@ export default function MovieList() {
   const pages = new Array(numberOfPages).fill(null).map((v, i) => i);
 
   useEffect(() => {
-    axios
-      .get(
-        `${baseURL}movies?pageNumber=${pageNumber}&pageSize=${pageSize}&sort=${sortBy}`
-      )
-      .then((response) => {
-        if (response.status === 200) {
-          setMovies(response.data);
-          setNumberOfPages(response.data[0].totalPages);
-        }
-      });
-  }, [setMovies, pageNumber, pageSize, sortBy]);
+    if (user.role === 'Admin') {
+      setLoading(true);
+      axios
+        .get(
+          `${baseURL}movies?pageNumber=${pageNumber}&pageSize=${pageSize}&sort=${sortBy}`
+        )
+        .then((response) => {
+          if (response.status === 200) {
+            setMovies(response.data);
+            setNumberOfPages(response.data[0].totalPages);
+            setLoading(false);
+          }
+        })
+        .catch((error) => alert(error));
+    }
+  }, [setMovies, pageNumber, pageSize, sortBy, user.role]);
 
   const goToPrevious = () => {
     setPageNumber(Math.max(1, pageNumber - 1));
@@ -257,53 +264,57 @@ export default function MovieList() {
                 </FormControl>
               </div>
 
-              <Grid container spacing={4}>
-                {movies.map((item) => (
-                  <Grid item key={item.id} xs={12} sm={6} md={4}>
-                    <Card className={classes.card}>
-                      <Link href={`/movies/${item.id}`}>
-                        <CardMedia
-                          className={classes.cardMedia}
-                          image={`http://movietickets.azurewebsites.net/${item.imageUrl.slice(
-                            1
-                          )}`}
-                          title="Image title"
-                        />
-                      </Link>
-                      <CardContent className={classes.cardContent}>
-                        <Typography gutterBottom variant="h5" component="h2">
-                          {item.name}
-                        </Typography>
-                        <Box
-                          display="flex"
-                          justifyContent="space-between"
-                          marginBottom="15px"
-                        >
-                          <Chip label={item.rating} color="primary" />
-                          <Chip label={item.genre} color="secondary" />
-                          <Chip label={item.duration} />
-                        </Box>
-                        <Box display="flex" justifyContent="space-around">
-                          <Button
-                            color="primary"
-                            id={item.id}
-                            onClick={handleEditDialogOpen}
+              {loading ? (
+                <LinearProgress />
+              ) : (
+                <Grid container spacing={4}>
+                  {movies.map((item) => (
+                    <Grid item key={item.id} xs={12} sm={6} md={4}>
+                      <Card className={classes.card}>
+                        <Link href={`/movies/${item.id}`}>
+                          <CardMedia
+                            className={classes.cardMedia}
+                            image={`http://movietickets.azurewebsites.net/${item.imageUrl.slice(
+                              1
+                            )}`}
+                            title="Image title"
+                          />
+                        </Link>
+                        <CardContent className={classes.cardContent}>
+                          <Typography gutterBottom variant="h5" component="h2">
+                            {item.name}
+                          </Typography>
+                          <Box
+                            display="flex"
+                            justifyContent="space-between"
+                            marginBottom="15px"
                           >
-                            <EditIcon />
-                          </Button>
-                          <Button
-                            color="secondary"
-                            id={item.id}
-                            onClick={handleDeleteDialogOpen}
-                          >
-                            <DeleteIcon />
-                          </Button>
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
+                            <Chip label={item.rating} color="primary" />
+                            <Chip label={item.genre} color="secondary" />
+                            <Chip label={item.duration} />
+                          </Box>
+                          <Box display="flex" justifyContent="space-around">
+                            <Button
+                              color="primary"
+                              id={item.id}
+                              onClick={handleEditDialogOpen}
+                            >
+                              <EditIcon />
+                            </Button>
+                            <Button
+                              color="secondary"
+                              id={item.id}
+                              onClick={handleDeleteDialogOpen}
+                            >
+                              <DeleteIcon />
+                            </Button>
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              )}
 
               <Dialog open={dialogOpen} onClose={handleDialogClose}>
                 <DialogTitle id="simple-dialog-title">Add Movie</DialogTitle>

@@ -15,6 +15,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  LinearProgress,
 } from '@material-ui/core';
 import useStyles from './HomeStyles';
 import Admin from '../Admin/Admin';
@@ -27,7 +28,7 @@ export default function Home() {
   const baseURL = 'https://movietickets.azurewebsites.net/api/';
   const [movies, setMovies] = useRecoilState(moviesAtom);
   const user = useRecoilValue(userAtom);
-
+  const [loading, setLoading] = useState(false);
   const [pageNumber, setPageNumber] = useState(1);
   const [numberOfPages, setNumberOfPages] = useState(0);
   const [pageSize] = useState(6);
@@ -37,6 +38,7 @@ export default function Home() {
   const pages = new Array(numberOfPages).fill(null).map((v, i) => i);
 
   useEffect(() => {
+    setLoading(true);
     axios
       .get(
         `${baseURL}movies?pageNumber=${pageNumber}&pageSize=${pageSize}&sort=${sortBy}`
@@ -45,8 +47,10 @@ export default function Home() {
         if (response.status === 200) {
           setMovies(response.data);
           setNumberOfPages(response.data[0].totalPages);
+          setLoading(false);
         }
-      });
+      })
+      .catch((error) => alert(error));
   }, [setMovies, pageNumber, pageSize, sortBy]);
 
   const goToPrevious = () => {
@@ -131,38 +135,42 @@ export default function Home() {
                 </FormControl>
               </div>
 
-              <Grid container spacing={4}>
-                {movies.map((item) => (
-                  <Grid item key={item.id} xs={12} sm={6} md={4}>
-                    <Card className={classes.card}>
-                      <Link href={`/movies/${item.id}`}>
-                        <CardMedia
-                          className={classes.cardMedia}
-                          image={`http://movietickets.azurewebsites.net/${item.imageUrl.slice(
-                            1
-                          )}`}
-                          title="Image title"
-                        />
-                      </Link>
-                      <CardContent className={classes.cardContent}>
-                        <Typography gutterBottom variant="h5" component="h2">
-                          {item.name}
-                        </Typography>
-                        <Box
-                          display="flex"
-                          alignItems="baseline"
-                          justifyContent="space-between"
-                          marginBottom="10px"
-                        >
-                          <Chip label={item.rating} color="primary" />
-                          <Chip label={item.genre} color="secondary" />
-                          <Chip label={item.duration} />
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
+              {loading ? (
+                <LinearProgress />
+              ) : (
+                <Grid container spacing={4}>
+                  {movies.map((item) => (
+                    <Grid item key={item.id} xs={12} sm={6} md={4}>
+                      <Card className={classes.card}>
+                        <Link href={`/movies/${item.id}`}>
+                          <CardMedia
+                            className={classes.cardMedia}
+                            image={`http://movietickets.azurewebsites.net/${item.imageUrl.slice(
+                              1
+                            )}`}
+                            title="Image title"
+                          />
+                        </Link>
+                        <CardContent className={classes.cardContent}>
+                          <Typography gutterBottom variant="h5" component="h2">
+                            {item.name}
+                          </Typography>
+                          <Box
+                            display="flex"
+                            alignItems="baseline"
+                            justifyContent="space-between"
+                            marginBottom="10px"
+                          >
+                            <Chip label={item.rating} color="primary" />
+                            <Chip label={item.genre} color="secondary" />
+                            <Chip label={item.duration} />
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              )}
               <Box className={classes.pagination}>
                 <Button
                   variant="outlined"
