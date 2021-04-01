@@ -1,9 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
-  icon: {
-    marginRight: theme.spacing(2),
-  },
   heroContent: {
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(8, 0, 6),
@@ -12,8 +9,8 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(4),
   },
   cardGrid: {
-    paddingTop: theme.spacing(8),
-    paddingBottom: theme.spacing(8),
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
   },
   card: {
     height: '100%',
@@ -26,6 +23,24 @@ const useStyles = makeStyles((theme) => ({
   cardContent: {
     flexGrow: 1,
     textAlign: 'center',
+  },
+  pagination: {
+    textAlign: 'center',
+    marginTop: theme.spacing(4),
+  },
+  previous: {
+    marginRight: theme.spacing(1),
+  },
+  next: {
+    marginLeft: theme.spacing(1),
+  },
+  sortBy: {
+    textAlign: 'right',
+    marginBottom: theme.spacing(2),
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
   },
   footer: {
     backgroundColor: theme.palette.background.paper,
