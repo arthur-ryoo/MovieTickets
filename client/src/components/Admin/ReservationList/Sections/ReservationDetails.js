@@ -65,17 +65,17 @@ function ReservationDetails(props) {
                   />
                 )}
                 <CardContent className={classes.cardContent}>
-                  <Typography variant="h7" component="h2" color="primary">
+                  <Typography variant="h6" component="h2" color="primary">
                     Name: {item.customerName}
                   </Typography>
 
-                  <Typography variant="h7" component="h2" color="primary">
+                  <Typography variant="h6" component="h2" color="primary">
                     Email: {item.email}
                   </Typography>
 
                   <Typography
                     gutterBottom
-                    variant="h7"
+                    variant="h6"
                     component="h2"
                     color="primary"
                   >

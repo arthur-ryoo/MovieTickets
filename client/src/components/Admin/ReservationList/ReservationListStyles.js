@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     width: 145,
   },
   container: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(4),
   },
   heroContent: {
     backgroundColor: theme.palette.background.paper,
