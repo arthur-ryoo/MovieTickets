@@ -44,17 +44,22 @@ namespace MovieTicketsAPI.Controllers
             switch (sort)
             {
                 case "highest_rating":
-                    return Ok(movies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize).OrderByDescending(m => m.Rating));
+                    movies = movies.OrderByDescending(m => m.Rating);
+                    break;
                 case "lowest_rating":
-                    return Ok(movies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize).OrderBy(m => m.Rating));
+                    movies = movies.OrderBy(m => m.Rating);
+                    break;
                 case "longest_duration":
-                    return Ok(movies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize).OrderByDescending(m => m.Duration));
+                    movies = movies.OrderByDescending(m => m.Duration);
+                    break;
                 case "shortest_duration":
-                    return Ok(movies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize).OrderBy(m => m.Duration));
+                    movies = movies.OrderBy(m => m.Duration);
+                    break;
                 default:
-                    return Ok(movies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize));
+                    movies = movies.OrderBy(m => m.Id);
+                    break;
             }
-
+            return Ok(movies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize));
         }
 
         [HttpGet("{id}")]
