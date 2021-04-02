@@ -25,8 +25,9 @@ namespace MovieTicketsAPI.Controllers
         public IActionResult GetAllMovies(string sort, int? pageNumber, int? pageSize)
         {
             var currentPageNumber = pageNumber ?? 1;
-            var currentPageSize = pageSize ?? 4;
+            var currentPageSize = pageSize ?? 100;
             var TotalCount = _dbContext.Movies.Count();
+            var TotalPages = (int)Math.Ceiling(TotalCount / (double)currentPageSize);
            var movies = from movie in _dbContext.Movies
             select new
             {
@@ -37,12 +38,12 @@ namespace MovieTicketsAPI.Controllers
                 Rating = movie.Rating,
                 Genre = movie.Genre,
                 ImageUrl = movie.ImageUrl,
-                TotalCount = TotalCount
+                TotalPages = TotalPages
             };
 
             switch (sort)
             {
-                case "highest__rating":
+                case "highest_rating":
                     return Ok(movies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize).OrderByDescending(m => m.Rating));
                 case "lowest_rating":
                     return Ok(movies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize).OrderBy(m => m.Rating));
