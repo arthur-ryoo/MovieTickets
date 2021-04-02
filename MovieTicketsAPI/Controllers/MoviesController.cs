@@ -22,14 +22,16 @@ namespace MovieTicketsAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllMovies(string sort, int? pageNumber, int? pageSize)
+        public IActionResult GetAllMovies(string sort, string keyword, int? pageNumber, int? pageSize)
         {
             var currentPageNumber = pageNumber ?? 1;
             var currentPageSize = pageSize ?? 100;
+            var movieName = keyword ?? "";
             var TotalCount = _dbContext.Movies.Count();
             var TotalPages = (int)Math.Ceiling(TotalCount / (double)currentPageSize);
            var movies = from movie in _dbContext.Movies
-            select new
+                        where movie.Name.StartsWith(movieName)
+                        select new
             {
                 Id = movie.Id,
                 Name = movie.Name,
@@ -55,10 +57,14 @@ namespace MovieTicketsAPI.Controllers
                 case "shortest_duration":
                     movies = movies.OrderBy(m => m.Duration);
                     break;
-                default:
+                case "created_oldest":
                     movies = movies.OrderBy(m => m.Id);
                     break;
+                default:
+                    movies = movies.OrderByDescending(m => m.Id);
+                    break;
             }
+
             return Ok(movies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize));
         }
 
