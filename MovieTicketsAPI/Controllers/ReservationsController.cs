@@ -42,7 +42,8 @@ namespace MovieTicketsAPI.Controllers
                                    Id = reservation.Id,
                                    ReservationTime = reservation.ReservationTime,
                                    CustomerName = customer.Name,
-                                   MovieName = movie.Name
+                                   MovieName = movie.Name,
+                                   MovieImageUrl = movie.ImageUrl,
                                };
             return Ok(reservations);
         }
@@ -61,6 +62,7 @@ namespace MovieTicketsAPI.Controllers
                                    ReservationTime = reservation.ReservationTime,
                                    CustomerName = customer.Name,
                                    MovieName = movie.Name,
+                                   MovieImageUrl = movie.ImageUrl,
                                    Email = customer.Email,
                                    Qty = reservation.Qty,
                                    Price = reservation.Price,
