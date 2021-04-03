@@ -30,9 +30,22 @@ namespace MovieTicketsAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Register the Swagger generator
+            services.AddSwaggerGen((options) =>
+            {
+                options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Movie Tickets API", Version = "v1" });
+            });
+
+            services.AddCors(options =>
+            {
+            options.AddPolicy("CorsPolicy",
+                builder => builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+            });
             services.AddControllers();
             services.AddMvc().AddXmlSerializerFormatters();
-            services.AddDbContext<MovieDbContext>(option => option.UseSqlServer(@"Data Source= (localdb)\MSSQLLocalDB;Initial Catalog=MovieDb;Integrated Security=True"));
+            services.AddDbContext<MovieDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("MovieDbConnection")));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {
@@ -53,10 +66,21 @@ namespace MovieTicketsAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Specify the Swagger JSON endpoint
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Movie Tickets API V1");
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors("CorsPolicy");
 
             app.UseStaticFiles();
 

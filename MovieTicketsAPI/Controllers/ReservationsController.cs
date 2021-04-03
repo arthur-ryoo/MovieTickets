@@ -32,19 +32,44 @@ namespace MovieTicketsAPI.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public IActionResult GetReservations()
+        public IActionResult GetReservations(string sort, string keyword, int? pageNumber, int? pageSize)
         {
+            var currentPageNumber = pageNumber ?? 1;
+            var currentPageSize = pageSize ?? 100;
+            var customerName = keyword ?? "";
+            var TotalCount = _dbContext.Reservations.Count();
+            var TotalPages = (int)Math.Ceiling(TotalCount / (double)currentPageSize);
             var reservations = from reservation in _dbContext.Reservations
                                join customer in _dbContext.Users on reservation.UserId equals customer.Id
                                join movie in _dbContext.Movies on reservation.MovieId equals movie.Id
+                               where customer.Name.StartsWith(customerName)
                                select new
                                {
                                    Id = reservation.Id,
                                    ReservationTime = reservation.ReservationTime,
                                    CustomerName = customer.Name,
-                                   MovieName = movie.Name
+                                   MovieName = movie.Name,
+                                   MovieImageUrl = movie.ImageUrl,
+                                   TotalPages = TotalPages
                                };
-            return Ok(reservations);
+
+            switch (sort)
+            {
+                case "movie_name":
+                    reservations = reservations.OrderBy(r => r.MovieName);
+                    break;
+                case "customer_name":
+                    reservations = reservations.OrderBy(r => r.CustomerName);
+                    break;
+                case "created_oldest":
+                    reservations = reservations.OrderBy(r => r.Id);
+                    break;
+                default:
+                    reservations = reservations.OrderByDescending(r => r.Id);
+                    break;
+            }
+
+            return Ok(reservations.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize));
         }
 
         [Authorize(Roles = "Admin")]
@@ -61,6 +86,7 @@ namespace MovieTicketsAPI.Controllers
                                    ReservationTime = reservation.ReservationTime,
                                    CustomerName = customer.Name,
                                    MovieName = movie.Name,
+                                   MovieImageUrl = movie.ImageUrl,
                                    Email = customer.Email,
                                    Qty = reservation.Qty,
                                    Price = reservation.Price,

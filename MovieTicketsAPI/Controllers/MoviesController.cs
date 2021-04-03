@@ -22,13 +22,16 @@ namespace MovieTicketsAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllMovies(string sort, int? pageNumber, int? pageSize)
+        public IActionResult GetAllMovies(string sort, string keyword, int? pageNumber, int? pageSize)
         {
             var currentPageNumber = pageNumber ?? 1;
-            var currentPageSize = pageSize ?? 4;
+            var currentPageSize = pageSize ?? 100;
+            var movieName = keyword ?? "";
             var TotalCount = _dbContext.Movies.Count();
+            var TotalPages = (int)Math.Ceiling(TotalCount / (double)currentPageSize);
            var movies = from movie in _dbContext.Movies
-            select new
+                        where movie.Name.StartsWith(movieName)
+                        select new
             {
                 Id = movie.Id,
                 Name = movie.Name,
@@ -37,23 +40,32 @@ namespace MovieTicketsAPI.Controllers
                 Rating = movie.Rating,
                 Genre = movie.Genre,
                 ImageUrl = movie.ImageUrl,
-                TotalCount = TotalCount
+                TotalPages = TotalPages
             };
 
             switch (sort)
             {
-                case "highest__rating":
-                    return Ok(movies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize).OrderByDescending(m => m.Rating));
+                case "highest_rating":
+                    movies = movies.OrderByDescending(m => m.Rating);
+                    break;
                 case "lowest_rating":
-                    return Ok(movies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize).OrderBy(m => m.Rating));
+                    movies = movies.OrderBy(m => m.Rating);
+                    break;
                 case "longest_duration":
-                    return Ok(movies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize).OrderByDescending(m => m.Duration));
+                    movies = movies.OrderByDescending(m => m.Duration);
+                    break;
                 case "shortest_duration":
-                    return Ok(movies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize).OrderBy(m => m.Duration));
+                    movies = movies.OrderBy(m => m.Duration);
+                    break;
+                case "created_oldest":
+                    movies = movies.OrderBy(m => m.Id);
+                    break;
                 default:
-                    return Ok(movies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize));
+                    movies = movies.OrderByDescending(m => m.Id);
+                    break;
             }
 
+            return Ok(movies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize));
         }
 
         [HttpGet("{id}")]

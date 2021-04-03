@@ -74,7 +74,8 @@ namespace MovieTicketsAPI.Controllers
                 token_type = token.TokenType,
                 creation_Time = token.ValidFrom,
                 expiration_Time = token.ValidTo,
-                user_id = userEmail.Id
+                user_id = userEmail.Id,
+                user_role = userEmail.Role,
             });
 
         }
