@@ -8,9 +8,10 @@ import {
   ListItemText,
   Toolbar,
   Fab,
+  Typography,
 } from '@material-ui/core';
 import useStyles from './NavbarStyles';
-import { Home, KeyboardArrowUp } from '@material-ui/icons';
+import { KeyboardArrowUp } from '@material-ui/icons';
 import React from 'react';
 import HideOnScroll from './Sections/HideOnScroll';
 import SideDrawer from './Sections/SideDrawer';
@@ -46,8 +47,8 @@ const Navbar = () => {
           <Toolbar component="nav">
             <Container maxWidth="md" className={classes.navbarDisplayFlex}>
               <IconButton edge="start" aria-label="home">
-                <a href="/" style={{ color: `white` }}>
-                  <Home fontSize="large" />
+                <a href="/" style={{ color: 'white', textDecoration: 'none' }}>
+                  <Typography variant="h6">Movie Tickets</Typography>
                 </a>
               </IconButton>
 
