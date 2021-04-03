@@ -179,7 +179,7 @@ export default function LoginForm() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Log in
+          Login
         </Typography>
         {state.error && (
           <Alert className={classes.alert} severity="error">
@@ -231,7 +231,7 @@ export default function LoginForm() {
             className={classes.submit}
             disabled={!isFormValid()}
           >
-            Login
+            Log in
           </Button>
           <Grid container>
             <Grid item>
@@ -250,7 +250,7 @@ export default function LoginForm() {
             color="secondary"
             className={classes.submit}
           >
-            Demo Login as Admin
+            Demo Log in as Admin
           </Button>
         </form>
 
@@ -262,7 +262,7 @@ export default function LoginForm() {
             color="secondary"
             className={classes.submit}
           >
-            Demo Login as User
+            Demo Log in as User
           </Button>
         </form>
       </div>
