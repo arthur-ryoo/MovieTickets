@@ -285,7 +285,7 @@ export default function ReservationList() {
                 <DialogContent>
                   <ReservationDetails
                     reservationId={reservationId}
-                    handleClose={handleDialogClose}
+                    handleDialogClose={handleDialogClose}
                     handleSnackbar={handleSnackbar}
                   />
                 </DialogContent>
