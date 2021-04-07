@@ -7,7 +7,7 @@ A role-based online movie ticket booking website deployed with AWS Amplify and A
 # Technologies
 - Front-end development
 	- React and Recoil
-	- Material-UI
+	- Material-UI and media queries for responsive layouts
 - Back-end development
 	- .NET Core
 	- JWT
