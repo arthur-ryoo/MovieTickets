@@ -27,6 +27,7 @@ A role-based online movie ticket booking website deployed with AWS Amplify and A
 
 # Future Implementation
 - User reviews
-- Profile page detailing user info
+- Profile page detailing user info and booked tickets
 - Edit user info
+- Seat selector
 - Payment methods
