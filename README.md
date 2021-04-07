@@ -1,5 +1,6 @@
 # Movie Tickets
 A role-based online movie ticket booking website deployed with AWS Amplify and Azure.
+![movie_tickets](https://user-images.githubusercontent.com/51396212/113906996-b51fb580-9789-11eb-95e0-723d5aacb3e9.png)
 
 # Links
 ### Demo: [Movie Tickets](https://master.dmj9f41zlkf3d.amplifyapp.com/)
