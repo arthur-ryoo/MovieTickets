@@ -18,7 +18,7 @@ A role-based online movie ticket booking website deployed with AWS Amplify and A
 	
 # Features
 - User & admin login / Registration
-- Role-based authentication
+- Role-based authorization
 - Sorting, searching, and pagination for movies
 - Book movie tickets
 - Upload movie with info and image as admin
