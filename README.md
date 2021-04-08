@@ -19,12 +19,16 @@ A role-based online movie ticket booking website deployed with AWS Amplify and A
 # Features
 - User & admin login / Registration
 - Role-based authorization
+	- ![login](https://user-images.githubusercontent.com/51396212/113982825-15e8d580-97fe-11eb-9419-5369e47fff32.png) 
 - Sorting, searching, and pagination for movies
 - Book movie tickets
+	- ![booking](https://user-images.githubusercontent.com/51396212/113982819-15503f00-97fe-11eb-8b6e-880e15c13c3b.png) 
 - Upload movie with info and image as admin
 - Edit and delete movies as admin
 - Sorting, searching, and pagination for booking lists as admin
+	- ![booking_sort](https://user-images.githubusercontent.com/51396212/113982817-14b7a880-97fe-11eb-9c3e-ebe64eb7aadf.png) 
 - Cancel booking tickets as admin
+	- ![cancel ticket](https://user-images.githubusercontent.com/51396212/113982812-11bcb800-97fe-11eb-8ad1-6c50a93919e9.png) 
 
 # Future Implementation
 - User reviews
