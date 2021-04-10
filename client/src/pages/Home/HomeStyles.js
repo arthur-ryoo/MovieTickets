@@ -50,9 +50,10 @@ const useStyles = makeStyles((theme) => ({
   next: {
     marginLeft: theme.spacing(1),
   },
-  sortBy: {
-    textAlign: 'right',
+  sortBy_search: {
     marginBottom: theme.spacing(2),
+    display: 'flex',
+    justifyContent: 'space-between',
   },
   formControl: {
     margin: theme.spacing(1),

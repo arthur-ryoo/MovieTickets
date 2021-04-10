@@ -16,6 +16,7 @@ import {
   Select,
   MenuItem,
   LinearProgress,
+  TextField,
 } from '@material-ui/core';
 import useStyles from './HomeStyles';
 import Admin from '../Admin/Admin';
@@ -33,15 +34,18 @@ export default function Home() {
   const [numberOfPages, setNumberOfPages] = useState(0);
   const [pageSize] = useState(6);
   const [sortBy, setSortBy] = useState('');
+  const [keyword, setKeyword] = useState('');
+  const [debouncedValue, setDebouncedValue] = useState('');
   const [open, setOpen] = useState(false);
 
   const pages = new Array(numberOfPages).fill(null).map((v, i) => i);
 
   useEffect(() => {
     setLoading(true);
+
     axios
       .get(
-        `${baseURL}movies?pageNumber=${pageNumber}&pageSize=${pageSize}&sort=${sortBy}`
+        `${baseURL}movies?pageNumber=${pageNumber}&pageSize=${pageSize}&sort=${sortBy}&keyword=${debouncedValue}`
       )
       .then((response) => {
         if (response.status === 200) {
@@ -54,7 +58,7 @@ export default function Home() {
         setLoading(false);
         alert(error);
       });
-  }, [setMovies, pageNumber, pageSize, sortBy]);
+  }, [setMovies, pageNumber, pageSize, sortBy, debouncedValue]);
 
   const goToPrevious = () => {
     setPageNumber(Math.max(1, pageNumber - 1));
@@ -64,8 +68,15 @@ export default function Home() {
     setPageNumber(Math.min(numberOfPages, pageNumber + 1));
   };
 
-  const handleChange = (event) => {
+  const handleSortByChange = (event) => {
     setSortBy(event.target.value);
+  };
+
+  const handleKeywordChange = (event) => {
+    setKeyword(event.target.value);
+    setTimeout(() => {
+      setDebouncedValue(event.target.value);
+    }, 1500);
   };
 
   const handleClose = () => {
@@ -105,7 +116,15 @@ export default function Home() {
                 Now Playing
               </Typography>
 
-              <div className={classes.sortBy}>
+              <div className={classes.sortBy_search}>
+                <TextField
+                  variant="outlined"
+                  label="Search"
+                  value={keyword}
+                  placeholder="Movie Title"
+                  onChange={handleKeywordChange}
+                />
+
                 <FormControl className={classes.formControl}>
                   <InputLabel shrink id="open-select-label">
                     Sort By
@@ -117,10 +136,13 @@ export default function Home() {
                     onClose={handleClose}
                     onOpen={handleOpen}
                     value={sortBy}
-                    onChange={handleChange}
+                    onChange={handleSortByChange}
                   >
                     <MenuItem value="">
-                      <em>Default</em>
+                      <em>Default (latest first)</em>
+                    </MenuItem>
+                    <MenuItem value="created_oldest">
+                      Created (oldest first)
                     </MenuItem>
                     <MenuItem value="highest_rating">
                       Rating (highest first)

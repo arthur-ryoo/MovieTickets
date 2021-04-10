@@ -14,6 +14,12 @@ import {
   Snackbar,
   CssBaseline,
   LinearProgress,
+  MenuItem,
+  Box,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
 } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import useStyles from './ReservationListStyles';
@@ -29,20 +35,32 @@ function Alert(props) {
 export default function ReservationList() {
   const [reservations, setReservations] = useRecoilState(reservationsAtom);
   const [reservationId, setReservationId] = useState(0);
-  const [open, setOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [numberOfPages, setNumberOfPages] = useState(0);
+  const [pageSize] = useState(6);
+  const [sortBy, setSortBy] = useState('');
+  const [sortByOpen, setSortByOpen] = useState(false);
+  const [keyword, setKeyword] = useState('');
+  const [debouncedValue, setDebouncedValue] = useState('');
   const classes = useStyles();
 
   const user = useRecoilValue(userAtom);
 
+  const pages = new Array(numberOfPages).fill(null).map((v, i) => i);
+
   useEffect(() => {
     if (user.role === 'Admin') {
       setLoading(true);
-      API.get('reservations/')
+      API.get(
+        `reservations?pageNumber=${pageNumber}&pageSize=${pageSize}&sort=${sortBy}&keyword=${debouncedValue}`
+      )
         .then((response) => {
           if (response.status === 200) {
             setReservations(response.data);
+            setNumberOfPages(response.data[0].totalPages);
             setLoading(false);
           }
         })
@@ -51,15 +69,49 @@ export default function ReservationList() {
           alert(error);
         });
     }
-  }, [setReservations, user.role]);
+  }, [
+    setReservations,
+    user.role,
+    pageNumber,
+    pageSize,
+    sortBy,
+    debouncedValue,
+  ]);
 
-  const handleClickOpen = (event) => {
-    setOpen(true);
+  const goToPrevious = () => {
+    setPageNumber(Math.max(1, pageNumber - 1));
+  };
+
+  const goToNext = () => {
+    setPageNumber(Math.min(numberOfPages, pageNumber + 1));
+  };
+
+  const handleKeywordChange = (event) => {
+    setKeyword(event.target.value);
+    setTimeout(() => {
+      setDebouncedValue(event.target.value);
+    }, 1500);
+  };
+
+  const handleSortByClose = () => {
+    setSortByOpen(false);
+  };
+
+  const handleSortByOpen = () => {
+    setSortByOpen(true);
+  };
+
+  const handleSortByChange = (event) => {
+    setSortBy(event.target.value);
+  };
+
+  const handleDialogOpen = (event) => {
+    setDialogOpen(true);
     setReservationId(event.currentTarget.id * 1);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleDialogClose = () => {
+    setDialogOpen(false);
   };
 
   const handleSnackbar = () => {
@@ -97,7 +149,43 @@ export default function ReservationList() {
 
           <CssBaseline />
           <div className={classes.container}>
-            <Container maxWidth="lg">
+            <Container maxWidth="md">
+              <div className={classes.sortBy_search}>
+                <TextField
+                  variant="outlined"
+                  label="Search"
+                  value={keyword}
+                  placeholder="Customer Name"
+                  onChange={handleKeywordChange}
+                />
+
+                <FormControl className={classes.formControl}>
+                  <InputLabel shrink id="open-select-label">
+                    Sort By
+                  </InputLabel>
+                  <Select
+                    labelId="open-select-label"
+                    id="open-select"
+                    open={sortByOpen}
+                    onClose={handleSortByClose}
+                    onOpen={handleSortByOpen}
+                    value={sortBy}
+                    onChange={handleSortByChange}
+                  >
+                    <MenuItem value="">
+                      <em>Default (latest first)</em>
+                    </MenuItem>
+                    <MenuItem value="created_oldest">
+                      Created (oldest first)
+                    </MenuItem>
+                    <MenuItem value="movie_name">Movie (A to Z)</MenuItem>
+                    <MenuItem value="customer_name">
+                      Customer Name (A to Z)
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+
               {loading ? (
                 <LinearProgress />
               ) : (
@@ -139,7 +227,7 @@ export default function ReservationList() {
                             <Button
                               variant="contained"
                               color="primary"
-                              onClick={handleClickOpen}
+                              onClick={handleDialogOpen}
                               id={item.id}
                             >
                               Details
@@ -162,15 +250,42 @@ export default function ReservationList() {
                   ))}
                 </Grid>
               )}
+              <Box className={classes.pagination}>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={goToPrevious}
+                  className={classes.previous}
+                >
+                  Previous
+                </Button>
+                {pages.map((pageIndex, index) => (
+                  <Button
+                    variant="outlined"
+                    key={index}
+                    onClick={() => setPageNumber(pageIndex + 1)}
+                  >
+                    {pageIndex + 1}
+                  </Button>
+                ))}
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={goToNext}
+                  className={classes.next}
+                >
+                  Next
+                </Button>
+              </Box>
 
-              <Dialog open={open} onClose={handleClose}>
+              <Dialog open={dialogOpen} onClose={handleDialogClose}>
                 <DialogTitle id="simple-dialog-title">
                   Booking Details
                 </DialogTitle>
                 <DialogContent>
                   <ReservationDetails
                     reservationId={reservationId}
-                    handleClose={handleClose}
+                    handleDialogClose={handleDialogClose}
                     handleSnackbar={handleSnackbar}
                   />
                 </DialogContent>

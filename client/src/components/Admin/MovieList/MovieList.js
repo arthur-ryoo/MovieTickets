@@ -20,6 +20,7 @@ import {
   DialogContent,
   Snackbar,
   LinearProgress,
+  TextField,
 } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import useStyles from './MovieListStyles';
@@ -50,6 +51,9 @@ export default function MovieList() {
   const [numberOfPages, setNumberOfPages] = useState(0);
   const [pageSize] = useState(6);
   const [sortBy, setSortBy] = useState('');
+  const [keyword, setKeyword] = useState('');
+  const [debouncedValue, setDebouncedValue] = useState('');
+
   const [open, setOpen] = useState(false);
 
   const [movieId, setMovieId] = useState(0);
@@ -68,9 +72,10 @@ export default function MovieList() {
   useEffect(() => {
     if (user.role === 'Admin') {
       setLoading(true);
+
       axios
         .get(
-          `${baseURL}movies?pageNumber=${pageNumber}&pageSize=${pageSize}&sort=${sortBy}`
+          `${baseURL}movies?pageNumber=${pageNumber}&pageSize=${pageSize}&sort=${sortBy}&keyword=${debouncedValue}`
         )
         .then((response) => {
           if (response.status === 200) {
@@ -84,7 +89,7 @@ export default function MovieList() {
           alert(error);
         });
     }
-  }, [setMovies, pageNumber, pageSize, sortBy, user.role]);
+  }, [setMovies, pageNumber, pageSize, sortBy, user.role, debouncedValue]);
 
   const goToPrevious = () => {
     setPageNumber(Math.max(1, pageNumber - 1));
@@ -94,8 +99,15 @@ export default function MovieList() {
     setPageNumber(Math.min(numberOfPages, pageNumber + 1));
   };
 
-  const handleChange = (event) => {
+  const handleSortByChange = (event) => {
     setSortBy(event.target.value);
+  };
+
+  const handleKeywordChange = (event) => {
+    setKeyword(event.target.value);
+    setTimeout(() => {
+      setDebouncedValue(event.target.value);
+    }, 1500);
   };
 
   const handleFilterClose = () => {
@@ -234,7 +246,15 @@ export default function MovieList() {
               </Container>
             </div>
             <Container className={classes.cardGrid} maxWidth="md">
-              <div className={classes.sortBy}>
+              <div className={classes.sortBy_search}>
+                <TextField
+                  variant="outlined"
+                  label="Search"
+                  value={keyword}
+                  placeholder="Movie Title"
+                  onChange={handleKeywordChange}
+                />
+
                 <FormControl className={classes.formControl}>
                   <InputLabel shrink id="open-select-label">
                     Sort By
@@ -246,10 +266,13 @@ export default function MovieList() {
                     onClose={handleFilterClose}
                     onOpen={handleFilterOpen}
                     value={sortBy}
-                    onChange={handleChange}
+                    onChange={handleSortByChange}
                   >
                     <MenuItem value="">
-                      <em>Default</em>
+                      <em>Default (latest first)</em>
+                    </MenuItem>
+                    <MenuItem value="created_oldest">
+                      Created (oldest first)
                     </MenuItem>
                     <MenuItem value="highest_rating">
                       Rating (highest first)

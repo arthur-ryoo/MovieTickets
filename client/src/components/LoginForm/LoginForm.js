@@ -105,6 +105,72 @@ export default function LoginForm() {
       });
   };
 
+  const handleAdminSubmit = (event) => {
+    event.preventDefault();
+    setState({ isLoading: true });
+
+    const baseURL = 'https://movietickets.azurewebsites.net/api/';
+
+    let body = {
+      email: 'admin@movietickets.com',
+      password: 'Anqlxlzpt',
+    };
+
+    axios
+      .post(`${baseURL}users/login`, body)
+      .then((response) => {
+        if (response.status === 200) {
+          setUser({
+            id: response.data.user_id,
+            role: response.data.user_role,
+            isLoggedIn: true,
+          });
+          LocalStorageService.setToken(response.data);
+          history.push('/');
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setState({ error: 'Failed to login' });
+      })
+      .finally(() => {
+        setState({ isLoading: false });
+      });
+  };
+
+  const handleUserSubmit = (event) => {
+    event.preventDefault();
+    setState({ isLoading: true });
+
+    const baseURL = 'https://movietickets.azurewebsites.net/api/';
+
+    let body = {
+      email: 'user@movietickets.com',
+      password: 'Anqlxlzpt',
+    };
+
+    axios
+      .post(`${baseURL}users/login`, body)
+      .then((response) => {
+        if (response.status === 200) {
+          setUser({
+            id: response.data.user_id,
+            role: response.data.user_role,
+            isLoggedIn: true,
+          });
+          LocalStorageService.setToken(response.data);
+          history.push('/');
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setState({ error: 'Failed to login' });
+      })
+      .finally(() => {
+        setState({ isLoading: false });
+      });
+  };
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -113,7 +179,7 @@ export default function LoginForm() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Log in
+          Login
         </Typography>
         {state.error && (
           <Alert className={classes.alert} severity="error">
@@ -165,7 +231,7 @@ export default function LoginForm() {
             className={classes.submit}
             disabled={!isFormValid()}
           >
-            Login
+            Log in
           </Button>
           <Grid container>
             <Grid item>
@@ -174,6 +240,30 @@ export default function LoginForm() {
               </Link>
             </Grid>
           </Grid>
+        </form>
+
+        <form className={classes.form} noValidate onSubmit={handleAdminSubmit}>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="secondary"
+            className={classes.submit}
+          >
+            Demo Log in as Admin
+          </Button>
+        </form>
+
+        <form className={classes.form} noValidate onSubmit={handleUserSubmit}>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="secondary"
+            className={classes.submit}
+          >
+            Demo Log in as User
+          </Button>
         </form>
       </div>
       <Backdrop className={classes.backdrop} open={state.isLoading}>

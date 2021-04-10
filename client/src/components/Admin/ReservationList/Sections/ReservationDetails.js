@@ -41,7 +41,7 @@ function ReservationDetails(props) {
       })
       .catch((error) => alert(error))
       .finally(() => {
-        props.handleClose();
+        props.handleDialogClose();
         setTimeout(() => {
           window.location.reload();
         }, 3000);
