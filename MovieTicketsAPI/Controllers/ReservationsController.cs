@@ -37,12 +37,22 @@ namespace MovieTicketsAPI.Controllers
             var currentPageNumber = pageNumber ?? 1;
             var currentPageSize = pageSize ?? 100;
             var customerName = keyword ?? "";
-            var TotalCount = _dbContext.Reservations.Count();
+
+            var filteredResult = from reservation in _dbContext.Reservations
+                               join customer in _dbContext.Users on reservation.UserId equals customer.Id
+                               join movie in _dbContext.Movies on reservation.MovieId equals movie.Id
+                               where customer.Name.Contains(customerName)
+                               select new
+                               {
+                                   Id = reservation.Id,
+                               };
+
+            var TotalCount = filteredResult.Count();
             var TotalPages = (int)Math.Ceiling(TotalCount / (double)currentPageSize);
             var reservations = from reservation in _dbContext.Reservations
                                join customer in _dbContext.Users on reservation.UserId equals customer.Id
                                join movie in _dbContext.Movies on reservation.MovieId equals movie.Id
-                               where customer.Name.StartsWith(customerName)
+                               where customer.Name.Contains(customerName)
                                select new
                                {
                                    Id = reservation.Id,

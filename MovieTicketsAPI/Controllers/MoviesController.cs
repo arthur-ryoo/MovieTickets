@@ -27,10 +27,10 @@ namespace MovieTicketsAPI.Controllers
             var currentPageNumber = pageNumber ?? 1;
             var currentPageSize = pageSize ?? 100;
             var movieName = keyword ?? "";
-            var TotalCount = _dbContext.Movies.Count();
+            var TotalCount = _dbContext.Movies.Where(q => q.Name.Contains(movieName)).Count();
             var TotalPages = (int)Math.Ceiling(TotalCount / (double)currentPageSize);
-           var movies = from movie in _dbContext.Movies
-                        where movie.Name.StartsWith(movieName)
+            var movies = from movie in _dbContext.Movies
+                        where movie.Name.Contains(movieName)
                         select new
             {
                 Id = movie.Id,
@@ -40,7 +40,7 @@ namespace MovieTicketsAPI.Controllers
                 Rating = movie.Rating,
                 Genre = movie.Genre,
                 ImageUrl = movie.ImageUrl,
-                TotalPages = TotalPages
+                TotalPages = TotalPages,
             };
 
             switch (sort)
