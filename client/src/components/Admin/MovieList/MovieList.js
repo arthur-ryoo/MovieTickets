@@ -50,6 +50,7 @@ export default function MovieList() {
   const [pageNumber, setPageNumber] = useState(1);
   const [numberOfPages, setNumberOfPages] = useState(0);
   const [pageSize] = useState(6);
+
   const [sortBy, setSortBy] = useState('');
   const [keyword, setKeyword] = useState('');
   const [debouncedValue, setDebouncedValue] = useState('');
