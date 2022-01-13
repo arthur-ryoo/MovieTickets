@@ -48,6 +48,8 @@ export default function MovieForm(props) {
     genre,
     trailorUrl,
     image,
+    error,
+    isLoading,
   } = state;
 
   const isFormValid = () => {
@@ -117,9 +119,9 @@ export default function MovieForm(props) {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        {state.error && (
+        {error && (
           <Alert className={classes.alert} severity="error">
-            {state.error}
+            {error}
           </Alert>
         )}
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
@@ -134,7 +136,7 @@ export default function MovieForm(props) {
                 label="Movie Name"
                 name="name"
                 type="text"
-                value={state.name}
+                value={name}
                 onChange={handleChange}
               />
             </Grid>
@@ -149,7 +151,7 @@ export default function MovieForm(props) {
                 label="Genre"
                 type="text"
                 name="genre"
-                value={state.genre}
+                value={genre}
                 onChange={handleChange}
               />
             </Grid>
@@ -164,7 +166,7 @@ export default function MovieForm(props) {
                 name="description"
                 label="Description"
                 type="text"
-                value={state.description}
+                value={description}
                 onChange={handleChange}
               />
             </Grid>
@@ -179,7 +181,7 @@ export default function MovieForm(props) {
                 label="Language"
                 type="text"
                 name="language"
-                value={state.language}
+                value={language}
                 onChange={handleChange}
               />
             </Grid>
@@ -194,7 +196,7 @@ export default function MovieForm(props) {
                 id="duration"
                 label="Duration"
                 name="duration"
-                value={state.duration}
+                value={duration}
                 placeholder="Ex) 1h 53m"
                 onChange={handleChange}
               />
@@ -243,7 +245,7 @@ export default function MovieForm(props) {
                 label="Ticket Price"
                 type="number"
                 name="ticketPrice"
-                value={state.ticketPrice}
+                value={ticketPrice}
                 onChange={handleChange}
                 placeholder="Ex) 12.99"
               />
@@ -259,7 +261,7 @@ export default function MovieForm(props) {
                 label="Rating"
                 type="number"
                 name="rating"
-                value={state.rating}
+                value={rating}
                 onChange={handleChange}
                 placeholder="Ex) 8.8"
               />
@@ -275,7 +277,7 @@ export default function MovieForm(props) {
                 label="Trailor URL"
                 type="text"
                 name="trailorUrl"
-                value={state.trailorUrl}
+                value={trailorUrl}
                 onChange={handleChange}
               />
             </Grid>
@@ -297,7 +299,7 @@ export default function MovieForm(props) {
           </Button>
         </form>
       </div>
-      <Backdrop className={classes.backdrop} open={state.isLoading}>
+      <Backdrop className={classes.backdrop} open={isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
     </Container>

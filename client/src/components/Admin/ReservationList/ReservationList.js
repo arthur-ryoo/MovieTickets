@@ -35,16 +35,21 @@ function Alert(props) {
 export default function ReservationList() {
   const [reservations, setReservations] = useRecoilState(reservationsAtom);
   const [reservationId, setReservationId] = useState(0);
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const [pageNumber, setPageNumber] = useState(1);
   const [numberOfPages, setNumberOfPages] = useState(0);
   const [pageSize] = useState(6);
+
   const [sortBy, setSortBy] = useState('');
   const [sortByOpen, setSortByOpen] = useState(false);
+
   const [keyword, setKeyword] = useState('');
   const [debouncedValue, setDebouncedValue] = useState('');
+
   const classes = useStyles();
 
   const user = useRecoilValue(userAtom);
