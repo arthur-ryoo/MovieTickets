@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
+using MovieTicketsAPI.Repository.IRepository;
+using MovieTicketsAPI.Repository;
 
 namespace MovieTicketsAPI
 {
@@ -61,6 +63,7 @@ namespace MovieTicketsAPI
                             ClockSkew = TimeSpan.Zero,
                         };
                     });
+            services.AddScoped<IMovieRepository, MovieRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

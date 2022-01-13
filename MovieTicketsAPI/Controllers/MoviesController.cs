@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MovieTicketsAPI.Data;
 using MovieTicketsAPI.Models;
+using MovieTicketsAPI.Repository.IRepository;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,9 +17,12 @@ namespace MovieTicketsAPI.Controllers
     public class MoviesController : ControllerBase
     {
         private MovieDbContext _dbContext;
-        public MoviesController(MovieDbContext dbContext)
+        private readonly IMovieRepository _movieRepository;
+
+        public MoviesController(MovieDbContext dbContext, IMovieRepository movieRepository)
         {
             _dbContext = dbContext;
+            _movieRepository = movieRepository;
         }
 
         [HttpGet]
@@ -69,13 +73,15 @@ namespace MovieTicketsAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetMovie(int id)
+        public async Task<IActionResult> GetMovie(int id)
         {
-            var movie = _dbContext.Movies.Find(id);
+            var movie = await _movieRepository.GetMovie(id);
+
             if (movie == null)
             {
                 return NotFound();
             }
+
             return Ok(movie);
         }
 
